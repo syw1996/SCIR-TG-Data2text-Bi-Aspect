@@ -1,2 +1,2 @@
 # Data2text-Bi-Aspect
-This repo contains code for [Learning to Select Bi-Aspect Information for Document-Scale Text Content Manipulation]; this code is based on an earlier release of [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py). The Pytorch version is 0.4.1.
+This repo contains code for Learning to Select Bi-Aspect Information for Document-Scale Text Content Manipulation; this code is based on an earlier release of [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py). The Pytorch version is 0.4.1.

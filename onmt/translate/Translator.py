@@ -132,6 +132,8 @@ class Translator(object):
         src_char = onmt.io.make_features(batch, 'src1_char', data_type)
         # print("batch:\n")
         # print(batch.__dict__)
+
+        ref_tgt = onmt.io.make_features(batch, 'ref_tgt')[:-1]
         
         if self.model is not None:
             enc_states, memory_bank = self.model.encoder((src, src_char), src_lengths)
@@ -157,7 +159,7 @@ class Translator(object):
 
         if not stage1:
             enc_states, memory_bank = self.model2.encoder(emb, src_lengths)
-
+            _, ref_memory_bank = self.model2.ref_encoder(ref_tgt)
             model = self.model2
 
         dec_states = model.decoder.init_decoder_state(
@@ -169,6 +171,8 @@ class Translator(object):
         memory_bank = rvar(memory_bank if isinstance(memory_bank, tuple) else memory_bank.data)
         memory_lengths = src_lengths.repeat(beam_size)
         dec_states.repeat_beam_size_times(beam_size)
+
+        ref_memory_bank = rvar(ref_memory_bank if isinstance(ref_memory_bank, tuple) else ref_memory_bank.data)
 
         # (3) run the decoder to generate sentences, using beam search.
         for i in range(self.max_length):
@@ -191,7 +195,7 @@ class Translator(object):
             inp = inp.unsqueeze(2)
             # Run one step.
             dec_out, dec_states, attn = model.decoder(
-                inp, memory_bank, dec_states, memory_lengths=memory_lengths)
+                inp, memory_bank, ref_memory_bank, dec_states, memory_lengths=memory_lengths)
 
             if not stage1:
                 dec_out = dec_out.squeeze(0)

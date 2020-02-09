@@ -571,6 +571,10 @@ def translate_opts(parser):
     group.add_argument('-src1',   required=True,
                        help="""Source sequence to decode (one line per
                        sequence)""")
+    group.add_argument('-ref_src',
+                       help='Reference source sequence')
+    group.add_argument('-ref_tgt',   required=True,
+                       help="""Reference target sequence""")
     group.add_argument('-src_dir',   default="",
                        help='Source directory for image or audio files')
     group.add_argument('-tgt1',

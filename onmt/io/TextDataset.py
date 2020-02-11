@@ -78,8 +78,8 @@ class TextDataset(ONMTDatasetBase):
                             zip(src_examples_iter, tgt_examples_iter, src2_examples_iter, tgt2_examples_iter, ref_src_examples_iter, ref_tgt_examples_iter))
         elif src2_examples_iter is not None:
             if tgt_examples_iter is None:
-                examples_iter = (self._join_dicts(src, src2, ref_src) for src, src2, ref_src in
-                            zip(src_examples_iter, src2_examples_iter, ref_src_examples_iter))
+                examples_iter = (self._join_dicts(src, src2, ref_tgt) for src, src2, ref_tgt in
+                            zip(src_examples_iter, src2_examples_iter, ref_tgt_examples_iter))
             else:
                 examples_iter = (self._join_dicts(src, tgt, src2) for src, tgt, src2 in
                             zip(src_examples_iter, tgt_examples_iter, src2_examples_iter))
@@ -416,19 +416,21 @@ class TextDataset(ONMTDatasetBase):
         loop_index = -1
         for example in examples_iter:
             src = example["src2"]
-            ref_src = example["ref_src"]
             loop_index += 1
             src_vocab = torchtext.vocab.Vocab(Counter(src),
                                               specials=[UNK_WORD, PAD_WORD])
-            ref_src_vocab = torchtext.vocab.Vocab(Counter(ref_src),
-                                              specials=[UNK_WORD, PAD_WORD])
             self.src_vocabs.append(src_vocab)
-            self.ref_src_vocabs.append(ref_src_vocab)
             # Mapping source tokens to indices in the dynamic dict.
             src_map = torch.LongTensor([src_vocab.stoi[w] for w in src])
-            ref_src_map = torch.LongTensor([ref_src_vocab.stoi[w] for w in ref_src])
             example["src_map"] = src_map
-            example["ref_src_map"] = ref_src_map
+
+            if "ref_src" in example:
+                ref_src = example["ref_src"]
+                ref_src_vocab = torchtext.vocab.Vocab(Counter(ref_src),
+                                              specials=[UNK_WORD, PAD_WORD])
+                self.ref_src_vocabs.append(ref_src_vocab)
+                ref_src_map = torch.LongTensor([ref_src_vocab.stoi[w] for w in ref_src])
+                example["ref_src_map"] = ref_src_map
 
             if "tgt2" in example:
                 tgt = example["tgt2"]

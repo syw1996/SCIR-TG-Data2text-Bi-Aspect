@@ -4,4 +4,4 @@ This repo contains document-level code for [Learning to Select Bi-Aspect Informa
 The sentence-level code for Learning to Select Bi-Aspect Information for Document-Scale Text Content Manipulation is in https://github.com/syw1996/SCIR-TG-Data2text-TCM.
 
 ## Architecture
-<img src='model.jpg'>
+<img src='image/model.jpg'>
